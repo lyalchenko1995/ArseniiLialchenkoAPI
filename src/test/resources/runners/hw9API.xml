@@ -1,0 +1,10 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="HW9" verbose="2" parallel="none">
+    <test name="HW9">
+        <classes>
+            <class name="BoardTest"/>
+            <class name="CardTest"/>
+            <class name="ListTest"/>
+        </classes>
+    </test>
+</suite>

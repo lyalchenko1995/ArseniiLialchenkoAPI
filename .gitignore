@@ -1,0 +1,11 @@
+.idea
+.allure
+target
+# Compiled class file
+*.class
+
+# Log files
+*.log
+
+*.iml
+*.pb
