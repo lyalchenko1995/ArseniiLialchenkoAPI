@@ -10,7 +10,7 @@ import java.net.HttpURLConnection;
 
 public abstract class BaseSpec {
 
-    public static final String URL = "https://api.trello.com";
+    protected static final String BASE_URL = "https://api.trello.com/1";
 
     public static final String parameterBoardName = "name";
     public static final String parameterBoardId = "id";
@@ -22,7 +22,7 @@ public abstract class BaseSpec {
     public static final String parameterCardName = "name";
 
     protected RequestSpecBuilder baseRequestBuilder = new RequestSpecBuilder()
-            .setBaseUri(URL)
+            .setBaseUri(BASE_URL)
             .addQueryParams(Authentification.getAuthentificationParameters());
 
     public ResponseSpecification getResponseSpecCheck() {

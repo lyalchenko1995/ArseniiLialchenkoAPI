@@ -1,9 +1,7 @@
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import records.Board;
-import specifications.boardSpecification.CreateBoardSpec;
-import specifications.boardSpecification.DeleteBoardSpec;
-import specifications.boardSpecification.GetListsOfBoardSpec;
+import specifications.BoardSpec;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
@@ -13,21 +11,18 @@ import static specifications.BaseSpec.*;
 
 public abstract class BaseTest {
 
-    static String beforeBoardId;
-    static final String boardIdUrlParamName = "id";
-    static final String beforeBoardName = "BeforeTestBoardName";
-    static String listId;
-    static final String listIdUrlParamName = "id";
+    protected static String beforeBoardId;
+    protected static final String boardIdUrlParamName = "id";
+    protected static final String beforeBoardName = "BeforeTestBoardName";
+    protected static String listId;
+    protected static final String listIdUrlParamName = "id";
 
-    CreateBoardSpec createBoardSpec = new CreateBoardSpec();
-    DeleteBoardSpec deleteBoardSpec = new DeleteBoardSpec();
-    GetListsOfBoardSpec getListsForBoard = new GetListsOfBoardSpec();
-
+    BoardSpec boardSpec = new BoardSpec();
 
     @BeforeClass
     public void setup() {
         Board testBoard = given()
-                .spec(createBoardSpec.getBoardCreateSpec())
+                .spec(boardSpec.getBoardCreateSpec())
                 .queryParam(parameterBoardName, beforeBoardName)
                 .when()
                 .post()
@@ -42,7 +37,7 @@ public abstract class BaseTest {
     @AfterClass
     public void tearDown() {
         given()
-                .spec(deleteBoardSpec.getBoardDeleteSpec())
+                .spec(boardSpec.getBoardDeleteSpec())
                 .pathParam(boardIdUrlParamName, beforeBoardId)
                 .when()
                 .delete()
@@ -52,7 +47,7 @@ public abstract class BaseTest {
 
     public String getFirstListId(String boardId) {
         ArrayList<String> resp = given()
-                .spec(getListsForBoard.getBoardListsSpec())
+                .spec(boardSpec.getBoardListsSpec())
                 .pathParam(parameterBoardId, boardId)
                 .when()
                 .get()
