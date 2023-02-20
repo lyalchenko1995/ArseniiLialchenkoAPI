@@ -9,9 +9,9 @@ import static specifications.BaseSpec.parameterBoardName;
 
 public class BoardTest extends BaseTest{
 
-    protected static final String boardName = "Board name";
-    protected static final String updatedBoardName = "New board name";
-    protected static String boardId;
+    private static final String boardName = "Board name";
+    private static final String updatedBoardName = "New board name";
+    private static String boardId;
 
     @Test(priority = 0)
     public void createBoardTest() {

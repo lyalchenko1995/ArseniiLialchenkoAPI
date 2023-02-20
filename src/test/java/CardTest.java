@@ -10,10 +10,10 @@ import static specifications.BaseSpec.parameterCardName;
 
 public class CardTest extends BaseTest {
 
-    protected String createdCardId;
-    protected Card createdCard;
-    protected String newCardName = "Card name";
-    protected CardSpec cardSpec = new CardSpec();
+    private String createdCardId;
+    private Card createdCard;
+    private String newCardName = "Card name";
+    private CardSpec cardSpec = new CardSpec();
 
     @Test(priority = 0)
     public void createCardTest() {

@@ -8,10 +8,10 @@ import static specifications.BaseSpec.*;
 
 public class ListTest extends BaseTest {
 
-    protected String createdListId;
-    protected String newListName = "List name";
+    private String createdListId;
+    private String newListName = "List name";
 
-    protected ListSpec listSpec = new ListSpec();
+    private ListSpec listSpec = new ListSpec();
 
     @Test(priority = 0)
     public void createListTest() {
