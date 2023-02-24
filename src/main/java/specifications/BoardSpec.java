@@ -1,7 +1,6 @@
 package specifications;
 
 import io.restassured.specification.RequestSpecification;
-import records.BoardBuilder;
 
 public class BoardSpec extends BaseSpec {
 

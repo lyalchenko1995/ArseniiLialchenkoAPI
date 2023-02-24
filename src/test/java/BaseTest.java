@@ -35,7 +35,7 @@ public abstract class BaseTest {
                 .statusCode(HttpURLConnection.HTTP_OK)
                 .extract().body().as(Board.class);
 
-        beforeBoardId = testBoard.id();
+        beforeBoardId = testBoard.getId();
         listId = getFirstListId(beforeBoardId);
     }
 

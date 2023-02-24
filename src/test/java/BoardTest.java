@@ -1,14 +1,8 @@
 
-import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.http.ContentType;
-import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.HttpStatus;
 import org.testng.annotations.Test;
 import records.Board;
-import records.BoardBuilder;
-
-import java.net.HttpURLConnection;
 
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -32,20 +26,14 @@ public class BoardTest extends BaseTest{
                 .spec(boardSpec.getResponseSpecCheck())
                 .body(parameterBoardName, equalTo(boardName))
                 .extract().body().as(Board.class);
-        boardId = createResponse.id();
+        boardId = createResponse.getId();
     }
 
     @Test(priority = 1)
     public void updateBoardTest() {
         String descForBoard = RandomStringUtils.random(100, true, true);
 
-        BoardBuilder newBoard = BoardBuilder.builder().desc(descForBoard).id(boardId).name(updatedBoardName).build();
-
-//        RequestSpecification baseRequestSpecForBuilder = new RequestSpecBuilder()
-//                .addQueryParam("key", System.getenv("APIkey"))
-//                .addQueryParam("token", System.getenv("APItoken"))
-//                .setContentType(ContentType.JSON)
-//                .build();
+        var newBoard = Board.builder().desc(descForBoard).id(boardId).name(updatedBoardName).build();
 
         System.out.println(newBoard.toString());
         given()
@@ -58,17 +46,8 @@ public class BoardTest extends BaseTest{
                 .body("desc",equalTo(descForBoard))
                 .body(parameterBoardName, equalTo(updatedBoardName))
                 .spec(boardSpec.getResponseSpecCheck())
-                .extract().body().as(BoardBuilder.class);
+                .extract().body().as(Board.class);
 
-
-//        given()
-//                .spec(boardSpec.getBoardUpdateSpec(updatedBoardName))
-//                .pathParam(boardIdUrlParamName, boardId)
-//                .when()
-//                .put()
-//                .then()
-//                .spec(boardSpec.getResponseSpecCheck())
-//                .body(parameterBoardName, equalTo(updatedBoardName));
     }
 
     @Test(priority = 2)
