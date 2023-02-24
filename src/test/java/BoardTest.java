@@ -1,6 +1,14 @@
 
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.http.HttpStatus;
 import org.testng.annotations.Test;
 import records.Board;
+import records.BoardBuilder;
+
+import java.net.HttpURLConnection;
 
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -29,14 +37,38 @@ public class BoardTest extends BaseTest{
 
     @Test(priority = 1)
     public void updateBoardTest() {
+        String descForBoard = RandomStringUtils.random(100, true, true);
+
+        BoardBuilder newBoard = BoardBuilder.builder().desc(descForBoard).id(boardId).name(updatedBoardName).build();
+
+//        RequestSpecification baseRequestSpecForBuilder = new RequestSpecBuilder()
+//                .addQueryParam("key", System.getenv("APIkey"))
+//                .addQueryParam("token", System.getenv("APItoken"))
+//                .setContentType(ContentType.JSON)
+//                .build();
+
+        System.out.println(newBoard.toString());
         given()
-                .spec(boardSpec.getBoardUpdateSpec(updatedBoardName))
-                .pathParam(boardIdUrlParamName, boardId)
+                .spec(boardSpec.getBoardUpdateSpecForBuilder())
                 .when()
+                .pathParam(boardIdUrlParamName, boardId)
+                .body(newBoard)
                 .put()
                 .then()
+                .body("desc",equalTo(descForBoard))
+                .body(parameterBoardName, equalTo(updatedBoardName))
                 .spec(boardSpec.getResponseSpecCheck())
-                .body(parameterBoardName, equalTo(updatedBoardName));
+                .extract().body().as(BoardBuilder.class);
+
+
+//        given()
+//                .spec(boardSpec.getBoardUpdateSpec(updatedBoardName))
+//                .pathParam(boardIdUrlParamName, boardId)
+//                .when()
+//                .put()
+//                .then()
+//                .spec(boardSpec.getResponseSpecCheck())
+//                .body(parameterBoardName, equalTo(updatedBoardName));
     }
 
     @Test(priority = 2)
@@ -61,5 +93,16 @@ public class BoardTest extends BaseTest{
                 .then()
                 .spec(boardSpec.getResponseSpecCheck())
                 .body("_value", nullValue());
+    }
+
+    @Test(priority = 4)
+    public void deleteDeletedBoardTest() {
+        given()
+                .spec(boardSpec.getBoardDeleteSpec())
+                .pathParam(boardIdUrlParamName, boardId)
+                .when()
+                .delete()
+                .then()
+                .statusCode(HttpStatus.SC_NOT_FOUND);
     }
 }

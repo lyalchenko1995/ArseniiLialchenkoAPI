@@ -1,6 +1,7 @@
 package specifications;
 
 import io.restassured.specification.RequestSpecification;
+import records.BoardBuilder;
 
 public class BoardSpec extends BaseSpec {
 
@@ -34,6 +35,12 @@ public class BoardSpec extends BaseSpec {
                 .setBasePath("/boards/{id}")
                 .addQueryParam(parameterBoardName, newName)
                 .setBody("")
+                .build();
+    }
+
+    public RequestSpecification getBoardUpdateSpecForBuilder() {
+        return baseRequestBuilder
+                .setBasePath("/boards/{id}")
                 .build();
     }
 }

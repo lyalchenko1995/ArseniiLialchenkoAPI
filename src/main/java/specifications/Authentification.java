@@ -17,7 +17,6 @@ public abstract class Authentification {
         if (authQueryParams.isEmpty()) {
             authQueryParams.put(apiKeyName, key);
             authQueryParams.put(apiTokenName, token);
-            System.out.println("Auth map ready");
         }
         return authQueryParams;
     }

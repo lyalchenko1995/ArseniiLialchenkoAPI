@@ -1,3 +1,6 @@
+import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import records.Board;
@@ -21,6 +24,8 @@ public abstract class BaseTest {
 
     @BeforeClass
     public void setup() {
+        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+
         Board testBoard = given()
                 .spec(boardSpec.getBoardCreateSpec())
                 .queryParam(parameterBoardName, beforeBoardName)
