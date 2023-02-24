@@ -7,8 +7,8 @@ public class CardSpec extends BaseSpec {
     public RequestSpecification getCardCreateSpec(String cardName, String listId) {
         return baseRequestBuilder
                 .setBasePath("/cards")
-                .addQueryParam(parameterCardName, cardName)
-                .addQueryParam(parameterCardList, listId)
+                .addQueryParam(NAME, cardName)
+                .addQueryParam(CARD_LIST, listId)
                 .setBody("")
                 .build();
     }

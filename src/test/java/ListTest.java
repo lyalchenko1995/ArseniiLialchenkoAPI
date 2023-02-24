@@ -1,5 +1,4 @@
 import org.testng.annotations.Test;
-import specifications.CardSpec;
 import specifications.ListSpec;
 
 import static io.restassured.RestAssured.given;
@@ -9,20 +8,20 @@ import static specifications.BaseSpec.*;
 public class ListTest extends BaseTest {
 
     private String createdListId;
-    private String newListName = "List name";
+    private final String newListName = "List name";
 
-    private ListSpec listSpec = new ListSpec();
+    private final ListSpec listSpec = new ListSpec();
 
-    @Test(priority = 0)
+    @Test()
     public void createListTest() {
         var createListResponse = given()
                 .spec(listSpec.getListCreateSpec(newListName))
-                .pathParam(boardIdUrlParamName, beforeBoardId)
+                .pathParam(ID, beforeBoardId)
                 .when()
                 .post()
                 .then()
-                .spec(listSpec.getResponseSpecCheck())
-                .body(parameterListName, equalTo(newListName));
+                .spec(listSpec.responseOkJson())
+                .body(NAME, equalTo(newListName));
         createdListId = createListResponse.extract().body().path("id");
     }
 
@@ -30,12 +29,12 @@ public class ListTest extends BaseTest {
     public void getListTest() {
         given()
                 .spec(listSpec.getListGetSpec())
-                .pathParam(listIdUrlParamName, createdListId)
+                .pathParam("id", createdListId)
                 .when()
                 .get()
                 .then()
-                .spec(listSpec.getResponseSpecCheck())
-                .body(parameterListName, equalTo(newListName))
-                .body(parameterListId, equalTo(createdListId));
+                .spec(listSpec.responseOkJson())
+                .body(NAME, equalTo(newListName))
+                .body(ID, equalTo(createdListId));
     }
 }

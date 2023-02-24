@@ -7,7 +7,7 @@ public class ListSpec extends BaseSpec {
     public RequestSpecification getListCreateSpec(String name) {
         return baseRequestBuilder
                 .setBasePath("/boards/{id}/lists")
-                .addQueryParam(parameterListName, name)
+                .addQueryParam(NAME, name)
                 .setBody("")
                 .build();
     }

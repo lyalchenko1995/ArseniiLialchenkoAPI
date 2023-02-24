@@ -5,26 +5,25 @@ import specifications.CardSpec;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
-import static specifications.BaseSpec.parameterCardList;
-import static specifications.BaseSpec.parameterCardName;
+import static specifications.BaseSpec.*;
 
 public class CardTest extends BaseTest {
 
     private String createdCardId;
     private Card createdCard;
-    private String newCardName = "Card name";
-    private CardSpec cardSpec = new CardSpec();
+    private final CardSpec cardSpec = new CardSpec();
 
-    @Test(priority = 0)
+    @Test()
     public void createCardTest() {
+        String newCardName = "Card name";
         var createCardResponse = given()
                 .spec(cardSpec.getCardCreateSpec(newCardName, listId))
                 .when()
                 .post()
                 .then()
-                .spec(cardSpec.getResponseSpecCheck())
-                .body(parameterCardName, equalTo(newCardName))
-                .body(parameterCardList, equalTo(listId));
+                .spec(cardSpec.responseOkJson())
+                .body(NAME, equalTo(newCardName))
+                .body(CARD_LIST, equalTo(listId));
         createdCard = createCardResponse.extract().body().as(Card.class);
         createdCardId = createdCard.id();
     }
@@ -37,7 +36,7 @@ public class CardTest extends BaseTest {
                 .when()
                 .get()
                 .then()
-                .spec(cardSpec.getResponseSpecCheck());
+                .spec(cardSpec.responseOkJson());
         Assert.assertEquals(createdCard, getCardResponse.extract().body().as(Card.class));
     }
 }

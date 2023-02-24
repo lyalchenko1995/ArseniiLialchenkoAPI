@@ -1,8 +1,9 @@
 import io.restassured.RestAssured;
-import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.specification.RequestSpecification;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.Parameters;
 import records.Board;
 import specifications.BoardSpec;
 
@@ -15,50 +16,54 @@ import static specifications.BaseSpec.*;
 public abstract class BaseTest {
 
     protected static String beforeBoardId;
-    protected static final String boardIdUrlParamName = "id";
-    protected static final String beforeBoardName = "BeforeTestBoardName";
     protected static String listId;
-    protected static final String listIdUrlParamName = "id";
+    protected BoardSpec boardSpec;
 
-    BoardSpec boardSpec = new BoardSpec();
+    @Parameters({"baseUri"})
+    @BeforeSuite
+    public void setUp(String baseUri) {
+        // as example of parametrization. Think how to insert env depended tokens
+        RestAssured.baseURI = baseUri;
+        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+    }
 
     @BeforeClass
-    public void setup() {
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-
-        Board testBoard = given()
-                .spec(boardSpec.getBoardCreateSpec())
-                .queryParam(parameterBoardName, beforeBoardName)
-                .when()
-                .post()
-                .then()
-                .statusCode(HttpURLConnection.HTTP_OK)
-                .extract().body().as(Board.class);
-
-        beforeBoardId = testBoard.getId();
-        listId = getFirstListId(beforeBoardId);
+    public void testSetUp() {
+        boardSpec = new BoardSpec();
+        GenerateTestData();
     }
 
     @AfterClass
     public void tearDown() {
         given()
                 .spec(boardSpec.getBoardDeleteSpec())
-                .pathParam(boardIdUrlParamName, beforeBoardId)
+                .pathParam(ID, beforeBoardId)
                 .when()
                 .delete()
                 .then()
-                .statusCode(HttpURLConnection.HTTP_OK);
+                .spec(boardSpec.responseOk());
     }
 
-    public String getFirstListId(String boardId) {
-        ArrayList<String> resp = given()
-                .spec(boardSpec.getBoardListsSpec())
-                .pathParam(parameterBoardId, boardId)
-                .when()
-                .get()
-                .then()
+    private void GenerateTestData() {
+        beforeBoardId = given()
+            .spec(boardSpec.getBoardCreateSpec())
+                .queryParam(NAME, RandomStringUtils.random(60))
+            .when()
+                .post()
+            .then()
                 .statusCode(HttpURLConnection.HTTP_OK)
-                .extract().body().path(parameterListId);
+                .extract().body().as(Board.class).getId();
+        listId = getFirstListId(beforeBoardId);
+    }
+    private String getFirstListId(String boardId) {
+        ArrayList<String> resp = given()
+            .spec(boardSpec.getBoardListsSpec())
+                .pathParam(ID, boardId)
+            .when()
+                .get()
+            .then()
+                .statusCode(HttpURLConnection.HTTP_OK) // change to response spec
+                .extract().body().path(ID);
         return resp.get(0);
     }
 }

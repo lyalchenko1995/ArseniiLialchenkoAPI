@@ -4,33 +4,41 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.specification.ResponseSpecification;
+import org.hamcrest.Matchers;
 
 import java.net.HttpURLConnection;
 
 
 public abstract class BaseSpec {
 
-    protected static final String BASE_URL = "https://api.trello.com/1";
-
-    public static final String parameterBoardName = "name";
-    public static final String parameterBoardId = "id";
-
-    public static final String parameterListId = "id";
-    public static final String parameterListName = "name";
-
-    public static final String parameterCardList = "idList";
-    public static final String parameterCardName = "name";
+    public static final String ID = "id";
+    public static final String NAME = "name";
+    public static final String CARD_LIST = "idList";
 
     protected RequestSpecBuilder baseRequestBuilder = new RequestSpecBuilder()
-            .setBaseUri(BASE_URL)
             .setContentType(ContentType.JSON)
-            .addQueryParams(Authentification.getAuthentificationParameters());
+            .addQueryParams(Authentication.getAuthenticationParameters());
 
-    public ResponseSpecification getResponseSpecCheck() {
+    public ResponseSpecification responseOkJson() {
         return new ResponseSpecBuilder()
                 .expectStatusCode(HttpURLConnection.HTTP_OK)
+                .expectResponseTime(Matchers.lessThan(500L))
                 .expectContentType(ContentType.JSON)
                 .build();
     }
 
+    public ResponseSpecification responseOk() {
+        return new ResponseSpecBuilder()
+            .expectStatusCode(HttpURLConnection.HTTP_OK)
+            .expectResponseTime(Matchers.lessThan(500L))
+            .build();
+    }
+
+    public ResponseSpecification responseNotFound() {
+        return new ResponseSpecBuilder()
+            .expectStatusCode(HttpURLConnection.HTTP_NOT_FOUND)
+            .expectContentType(ContentType.TEXT)
+            .expectResponseTime(Matchers.lessThan(500L))
+            .build();
+    }
 }
